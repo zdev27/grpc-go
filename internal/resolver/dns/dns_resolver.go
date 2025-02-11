@@ -123,7 +123,7 @@ func (b *dnsBuilder) Build(target resolver.Target, cc resolver.ClientConn, opts 
 	}
 
 	// IP address.
-	if ipAddr, err := formatIP(host); err == nil {
+	if ipAddr, err := FormatIP(host); err == nil {
 		addr := []resolver.Address{{Addr: ipAddr + ":" + port}}
 		cc.UpdateState(resolver.State{Addresses: addr})
 		return deadResolver{}, nil
@@ -261,7 +261,7 @@ func (d *dnsResolver) lookupSRV(ctx context.Context) ([]resolver.Address, error)
 			return nil, err
 		}
 		for _, a := range lbAddrs {
-			ip, err := formatIP(a)
+			ip, err := FormatIP(a)
 			if err != nil {
 				return nil, fmt.Errorf("dns: error parsing A record IP address %v: %v", a, err)
 			}
@@ -323,7 +323,7 @@ func (d *dnsResolver) lookupHost(ctx context.Context) ([]resolver.Address, error
 	}
 	newAddrs := make([]resolver.Address, 0, len(addrs))
 	for _, a := range addrs {
-		ip, err := formatIP(a)
+		ip, err := FormatIP(a)
 		if err != nil {
 			return nil, fmt.Errorf("dns: error parsing A record IP address %v: %v", a, err)
 		}
@@ -356,7 +356,7 @@ func (d *dnsResolver) lookup() (*resolver.State, error) {
 // an IP address. If addr is an IPv4 address, return the addr and error = nil.
 // If addr is an IPv6 address, return the addr enclosed in square brackets and
 // error = nil.
-func formatIP(addr string) (string, error) {
+func FormatIP(addr string) (string, error) {
 	ip, err := netip.ParseAddr(addr)
 	if err != nil {
 		return "", err
